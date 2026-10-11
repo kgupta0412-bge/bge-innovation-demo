@@ -133,4 +133,53 @@
             }
         };
     </script>
-    <script type='text/javascript' src='
+    <script type='text/javascript' src='https://bordgaisenergyeandu--afdev2.sandbox.my.site.com/ESWBGEServiceAssistant1788780778611/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+
+    <!-- Custom Bridging Logic (Clipboard Hack) -->
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', (event) => {
+            
+            function launchAgentforce() {
+                const queryInput = document.getElementById('ai-query-input');
+                if (!queryInput) return;
+                
+                const queryText = queryInput.value;
+                
+                // Copy text to clipboard silently
+                if (queryText.trim() !== '') {
+                    navigator.clipboard.writeText(queryText).catch(err => {
+                        console.warn("Clipboard access denied", err);
+                    });
+                }
+
+                // Check if Salesforce is loaded and launch
+                if (typeof embeddedservice_bootstrap !== 'undefined') {
+                    try {
+                        embeddedservice_bootstrap.utilAPI.launchChat();
+                    } catch(err) {
+                        console.error("Chat API error: " + err);
+                    }
+                }
+            }
+
+            // Attach listeners safely
+            const triggerBtn = document.getElementById('ai-trigger-btn');
+            const queryInputBox = document.getElementById('ai-query-input');
+
+            if (triggerBtn) {
+                triggerBtn.addEventListener('click', launchAgentforce);
+            }
+
+            if (queryInputBox) {
+                queryInputBox.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        launchAgentforce();
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
