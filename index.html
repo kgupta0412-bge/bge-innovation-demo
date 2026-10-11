@@ -17,7 +17,7 @@
         /* Use the screenshot as the site background */
         body {
             background-image: url('BGE.png');
-            background-size: 100% auto; 
+            background-size: cover; 
             background-position: top center;
             background-repeat: no-repeat;
             position: relative;
@@ -26,40 +26,47 @@
         /* AI Search Bar Overlay Container */
         .ai-search-container {
             position: absolute;
-            top: 75px; 
+            top: 85px; 
             left: 50%;
             transform: translateX(-50%);
             width: 95%;
-            max-width: 650px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            max-width: 750px; /* Slightly reduced for a sleeker dropdown look */
             z-index: 10;
         }
 
-        /* AI Search Bar Styling */
+        /* The Unified Wrapper for Input + Dropdown */
+        .ai-search-wrapper {
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 12px 32px rgba(0, 20, 50, 0.15);
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Active State (When user clicks the search bar) */
+        .ai-search-wrapper.active {
+            border-color: #4a44d1; /* The purple/blue border from your screenshot */
+            border-radius: 16px; /* Squares off the corners slightly when expanded */
+            box-shadow: 0 12px 36px rgba(74, 68, 209, 0.2);
+        }
+
+        /* Top Bar (Input Area) */
         .ai-search-bar {
             display: flex;
             align-items: center;
-            background: white;
-            border-radius: 50px;
-            padding: 8px 24px;
+            padding: 10px 24px;
             width: 100%;
-            box-shadow: 0 12px 32px rgba(0, 20, 50, 0.15);
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .ai-search-bar:focus-within {
-            border-color: #005eb8;
-            box-shadow: 0 12px 36px rgba(0, 94, 184, 0.3);
+            box-sizing: border-box;
         }
 
         /* AI Icon (Sparkles) */
         .ai-icon {
             font-size: 1.4rem;
             margin-right: 12px;
-            background: linear-gradient(45deg, #005eb8, #00a0d2);
+            background: linear-gradient(45deg, #4a44d1, #00a0d2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             user-select: none;
@@ -78,7 +85,6 @@
 
         .ai-search-bar input::placeholder {
             color: #6b7280;
-            font-style: italic;
         }
 
         /* Search Button */
@@ -98,16 +104,78 @@
         .search-btn:hover {
             background-color: #005eb8;
         }
+
+        /* Dropdown Area */
+        .ai-dropdown {
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            width: 100%;
+            border-top: 1px solid #eaeaea;
+            padding: 10px 0 16px 0;
+            background-color: white;
+        }
+
+        /* Show dropdown when wrapper is active */
+        .ai-search-wrapper.active .ai-dropdown {
+            display: flex;
+        }
+
+        /* Individual Suggestion Items */
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 30px;
+            cursor: pointer;
+            color: #4a4a4a;
+            font-size: 1.05rem;
+            transition: background 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f3f7fb;
+            color: #001432;
+        }
+
+        /* Sparkle icon for dropdown items */
+        .suggestion-item .sparkle {
+            font-size: 1.1rem;
+            margin-right: 15px;
+            background: linear-gradient(45deg, #4a44d1, #00a0d2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            user-select: none;
+        }
     </style>
 </head>
 <body>
 
-    <!-- AI Search Bar with IDs added for JavaScript targeting -->
+    <!-- Unified Search Component -->
     <div class="ai-search-container">
-        <div class="ai-search-bar">
-            <div class="ai-icon">✨</div>
-            <input type="text" id="ai-query-input" placeholder="Find a plan, seek help...">
-            <button class="search-btn" id="ai-trigger-btn">24*7</button>
+        <div class="ai-search-wrapper" id="search-wrapper">
+            
+            <!-- Input Area -->
+            <div class="ai-search-bar">
+                <div class="ai-icon">✨</div>
+                <input type="text" id="ai-query-input" placeholder="Ask Agentforce anything..." autocomplete="off">
+                <button class="search-btn" id="ai-trigger-btn">24*7</button>
+            </div>
+
+            <!-- Expandable Suggestions Dropdown -->
+            <div class="ai-dropdown" id="ai-dropdown">
+                <div class="suggestion-item" data-query="Find a plan">
+                    <span class="sparkle">✨</span> Find a plan
+                </div>
+                <div class="suggestion-item" data-query="Check for renewal options">
+                    <span class="sparkle">✨</span> Check for renewal options
+                </div>
+                <div class="suggestion-item" data-query="Update my phone number">
+                    <span class="sparkle">✨</span> Submit my meter read
+                </div>
+                <div class="suggestion-item" data-query="Update my email">
+                    <span class="sparkle">✨</span> Update my email
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -135,18 +203,22 @@
     </script>
     <script type='text/javascript' src='https://bordgaisenergyeandu--afdev2.sandbox.my.site.com/ESWBGEServiceAssistant1788780778611/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
-    <!-- Custom Bridging Logic (Clipboard Hack) -->
+    <!-- Custom Bridging Logic & UI Behavior -->
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', (event) => {
             
-            function launchAgentforce() {
-                const queryInput = document.getElementById('ai-query-input');
-                if (!queryInput) return;
-                
-                const queryText = queryInput.value;
+            const wrapper = document.getElementById('search-wrapper');
+            const queryInputBox = document.getElementById('ai-query-input');
+            const triggerBtn = document.getElementById('ai-trigger-btn');
+            const suggestionItems = document.querySelectorAll('.suggestion-item');
+
+            // Launch Function (Clipboard Hack + API Trigger)
+            function launchAgentforce(textValue) {
+                // Determine text to copy
+                let queryText = textValue || queryInputBox.value;
                 
                 // Copy text to clipboard silently
-                if (queryText.trim() !== '') {
+                if (queryText && queryText.trim() !== '') {
                     navigator.clipboard.writeText(queryText).catch(err => {
                         console.warn("Clipboard access denied", err);
                     });
@@ -160,22 +232,50 @@
                         console.error("Chat API error: " + err);
                     }
                 }
+                
+                // Close dropdown after launch
+                wrapper.classList.remove('active');
             }
 
-            // Attach listeners safely
-            const triggerBtn = document.getElementById('ai-trigger-btn');
-            const queryInputBox = document.getElementById('ai-query-input');
+            // --- UI BEHAVIOR LISTENERS ---
 
-            if (triggerBtn) {
-                triggerBtn.addEventListener('click', launchAgentforce);
-            }
-
+            // Open dropdown when user clicks inside the input box
             if (queryInputBox) {
+                queryInputBox.addEventListener('focus', () => {
+                    wrapper.classList.add('active');
+                });
+
+                // Launch on Enter Key
                 queryInputBox.addEventListener('keypress', function(e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         launchAgentforce();
                     }
+                });
+            }
+
+            // Close dropdown when user clicks anywhere outside the search container
+            document.addEventListener('click', (e) => {
+                if (!wrapper.contains(e.target)) {
+                    wrapper.classList.remove('active');
+                }
+            });
+
+            // Handle Clicks on Individual Suggestions
+            suggestionItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const selectedText = this.getAttribute('data-query');
+                    if (queryInputBox) {
+                        queryInputBox.value = selectedText; // Visually update the box
+                    }
+                    launchAgentforce(selectedText); // Launch chat with this text
+                });
+            });
+
+            // Handle Manual Button Click
+            if (triggerBtn) {
+                triggerBtn.addEventListener('click', () => {
+                    launchAgentforce();
                 });
             }
         });
