@@ -217,24 +217,31 @@
 
             // Launch Function (Clipboard Hack + API Trigger)
             function launchAgentforce(textValue) {
-                // Determine text to copy
                 let queryText = textValue || queryInputBox.value;
                 
-                // Copy text to clipboard silently
                 if (queryText && queryText.trim() !== '') {
-                    navigator.clipboard.writeText(queryText).catch(err => {
-                        console.warn("Clipboard access denied", err);
-                    });
-                }
-
-                // Check if Salesforce is loaded and launch
-                if (typeof embeddedservice_bootstrap !== 'undefined') {
-                    try {
+                    if (typeof embeddedservice_bootstrap !== 'undefined') {
+                        try {
+                            // 1. Pass the exact search text to your custom parameter
+                            embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({
+                                "Initial_Search_Query": queryText
+                            });
+                            
+                            // 2. Launch the chat window
+                            embeddedservice_bootstrap.utilAPI.launchChat();
+                        } catch(err) {
+                            console.error("Chat API error: " + err);
+                        }
+                    }
+                } else {
+                    // Launch normally if the search box is empty
+                    if (typeof embeddedservice_bootstrap !== 'undefined') {
                         embeddedservice_bootstrap.utilAPI.launchChat();
-                    } catch(err) {
-                        console.error("Chat API error: " + err);
                     }
                 }
+                
+                wrapper.classList.remove('active');
+            }
                 
                 // Close dropdown after launch
                 wrapper.classList.remove('active');
