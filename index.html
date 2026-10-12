@@ -1,3 +1,7 @@
+Here is the complete, presentation-ready code updated to point to your new **BGE_Innovation_Day** deployment.
+Because MIAW heavily caches connection tokens in the browser, switching back and forth between deployments will crash the widget unless you use a completely fresh Incognito window after you push this code to GitHub.
+Copy and paste this entire block into your index.html file on GitHub:
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,7 +34,7 @@
             left: 50%;
             transform: translateX(-50%);
             width: 95%;
-            max-width: 750px; /* Slightly reduced for a sleeker dropdown look */
+            max-width: 750px; 
             z-index: 10;
         }
 
@@ -48,8 +52,8 @@
 
         /* Active State (When user clicks the search bar) */
         .ai-search-wrapper.active {
-            border-color: #4a44d1; /* The purple/blue border from your screenshot */
-            border-radius: 16px; /* Squares off the corners slightly when expanded */
+            border-color: #4a44d1; 
+            border-radius: 16px; 
             box-shadow: 0 12px 36px rgba(74, 68, 209, 0.2);
         }
 
@@ -107,7 +111,7 @@
 
         /* Dropdown Area */
         .ai-dropdown {
-            display: none; /* Hidden by default */
+            display: none; 
             flex-direction: column;
             width: 100%;
             border-top: 1px solid #eaeaea;
@@ -168,7 +172,7 @@
                 <div class="suggestion-item" data-query="Check for renewal options">
                     <span class="sparkle">✨</span> Check for renewal options
                 </div>
-                <div class="suggestion-item" data-query="Update my phone number">
+                <div class="suggestion-item" data-query="Submit my meter read">
                     <span class="sparkle">✨</span> Submit my meter read
                 </div>
                 <div class="suggestion-item" data-query="Update my email">
@@ -184,25 +188,26 @@
     <!-- ============================================================ -->
     
     <script type='text/javascript'>
-	function initEmbeddedMessaging() {
-		try {
-			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
+        function initEmbeddedMessaging() {
+            try {
+                embeddedservice_bootstrap.settings.language = 'en_US'; 
 
-			embeddedservice_bootstrap.init(
-				'00DRR00000V4G17',
-				'BGE_Service_Assistant',
-				'https://bordgaisenergyeandu--afdev2.sandbox.my.site.com/ESWBGEServiceAssistant1788780778611',
-				{
-					scrt2URL: 'https://bordgaisenergyeandu--afdev2.sandbox.my.salesforce-scrt.com'
-				}
-			);
-		} catch (err) {
-			console.error('Error loading Embedded Messaging: ', err);
-		}
-	};
-</script>
-<script type='text/javascript' src='https://bordgaisenergyeandu--afdev2.sandbox.my.site.com/ESWBGEServiceAssistant1788780778611/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
-	
+                // Updated to the new BGE_Innovation_Day deployment
+                embeddedservice_bootstrap.init(
+                    '00DRR00000V4G17',
+                    'BGE_Innovation_Day',
+                    'https://bordgaisenergyeandu--afdev2.sandbox.my.site.com/ESWBGEInnovation1791761756160',
+                    {
+                        scrt2URL: 'https://bordgaisenergyeandu--afdev2.sandbox.my.salesforce-scrt.com'
+                    }
+                );
+            } catch (err) {
+                console.error('Error loading Embedded Messaging: ', err);
+            }
+        };
+    </script>
+    <script type='text/javascript' src='https://bordgaisenergyeandu--afdev2.sandbox.my.site.com/ESWBGEInnovation1791761756160/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+
     <!-- Custom Bridging Logic & UI Behavior -->
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', (event) => {
@@ -266,9 +271,9 @@
                 item.addEventListener('click', function() {
                     const selectedText = this.getAttribute('data-query');
                     if (queryInputBox) {
-                        queryInputBox.value = selectedText; // Visually update the box
+                        queryInputBox.value = selectedText; 
                     }
-                    launchAgentforce(selectedText); // Launch chat with this text
+                    launchAgentforce(selectedText); 
                 });
             });
 
@@ -283,3 +288,5 @@
 
 </body>
 </html>
+
+```
