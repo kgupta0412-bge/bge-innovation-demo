@@ -92,17 +92,30 @@
             background-color: #001432;
             color: white;
             border: none;
-            border-radius: 30px;
-            padding: 10px 24px;
-            font-weight: bold;
-            font-size: 1rem;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
             transition: background-color 0.2s;
             margin-left: 10px;
+            padding: 0;
         }
 
         .search-btn:hover {
             background-color: #005eb8;
+        }
+
+        .search-btn svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.2s ease;
+        }
+
+        .search-btn:hover svg {
+            transform: translateY(-2px);
         }
 
         /* Dropdown Area */
@@ -157,7 +170,12 @@
             <div class="ai-search-bar">
                 <div class="ai-icon">✨</div>
                 <input type="text" id="ai-query-input" placeholder="Ask Agentforce anything..." autocomplete="off">
-                <button class="search-btn" id="ai-trigger-btn">24*7</button>
+                <button class="search-btn" id="ai-trigger-btn" aria-label="Submit search">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="19" x2="12" y2="5"></line>
+                        <polyline points="5 12 12 5 19 12"></polyline>
+                    </svg>
+                </button>
             </div>
 
             <!-- Expandable Suggestions Dropdown -->
@@ -290,5 +308,3 @@
 
 </body>
 </html>
-
-```
